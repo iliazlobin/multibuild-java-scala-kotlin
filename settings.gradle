@@ -1,0 +1,13 @@
+rootProject.name='gradle-app-project'
+
+//fileTree('.') {
+//    include '**/build.gradle'
+//    exclude '/build.gradle'
+//}.collect {
+//    relativePath(it.parent).replace(File.separator, ':')
+//}.each {
+//    include(it)
+//}
+
+include("build-kotlin-using-scala")
+include("build-scala-using-kotlin")

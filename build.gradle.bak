@@ -1,0 +1,119 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url = "https://repo.spring.io/plugins-release" }
+    maven { url = "https://repo.spring.io/milestone" }
+  }
+  dependencies {
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${project.properties['kotlin.version']}")
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.9.RELEASE")
+    classpath("org.jetbrains.kotlin:kotlin-allopen:${project.properties['kotlin.version']}")
+    classpath("io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE")
+  }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'scala'
+apply plugin: 'maven-publish'
+apply plugin: 'ivy-publish'
+
+group 'niias'
+version '0.1-SNAPSHOT'
+
+compileJava.options.encoding = 'UTF-8'
+
+configurations.all {
+  resolutionStrategy {
+    cacheDynamicVersionsFor 0, 'seconds'
+    cacheChangingModulesFor 0, 'seconds'
+  }
+}
+
+allprojects {
+  repositories {
+    jcenter()
+    maven {
+      url "http://192.168.0.201:58010/repository/niias-maven-releases/"
+      credentials {
+        username "${nexusUsername}"
+        password "${nexusPassword}"
+      }
+    }
+    maven {
+      url "http://192.168.0.201:58010/repository/niias-maven-snapshots/"
+      credentials {
+        username "${nexusUsername}"
+        password "${nexusPassword}"
+      }
+    }
+    ivy {
+      url "file://${System.properties['user.home']}/.ivy2/local"
+      layout 'pattern', {
+        artifact '[organisation]/[module]/[revision]/[type]s/[artifact](-[classifier])(.[ext])'
+        ivy '[organisation]/[module]/[revision]/[type]s/[artifact](-[classifier])(.[ext])'
+      }
+    }
+    ivy {
+      url "http://192.168.0.201:58010/repository/niias-ivy-snapshots/"
+      layout 'pattern', {
+        artifact '[organisation]/[module]/[revision]/[type]s/[artifact](-[classifier])(.[ext])'
+        ivy '[organisation]/[module]/[revision]/[type]s/[artifact](-[classifier])(.[ext])'
+      }
+      credentials {
+        username "${nexusUsername}"
+        password "${nexusPassword}"
+      }
+    }
+    ivy {
+      url "http://192.168.0.201:58010/repository/niias-ivy-releases/"
+      layout 'pattern', {
+        artifact '[organisation]/[module]/[revision]/[type]s/[artifact](-[classifier])(.[ext])'
+        ivy '[organisation]/[module]/[revision]/[type]s/[artifact](-[classifier])(.[ext])'
+      }
+      credentials {
+        username "${nexusUsername}"
+        password "${nexusPassword}"
+      }
+    }
+    maven { url "https://jitpack.io" }
+  }
+}
+
+dependencies {
+  compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.2'
+
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+  compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+  testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+  testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+  testCompile 'junit:junit:4.12'
+}
+
+tasks.withType(ScalaCompile) {
+  scalaCompileOptions.additionalParameters = [
+    "-deprecation",
+    "-encoding",
+    "UTF-8",
+    "-feature",
+    "-unchecked",
+    "-Ywarn-adapted-args",
+    "-Ywarn-dead-code",
+    "-Ywarn-value-discard",
+    "-Ylog-classpath"]
+}
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+}
+
+idea {
+  module {
+    downloadJavadoc = true
+    downloadSources = true
+  }
+}
