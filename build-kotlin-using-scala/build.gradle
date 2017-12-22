@@ -155,28 +155,24 @@ tasks.withType(ScalaCompile) {
 }
 
 sourceSets {
-    main.kotlin.srcDirs += main.java.srcDirs
-    main.scala.srcDirs += main.java.srcDirs
-//    main.kotlin.srcDirs += main.scala.srcDirs
+//    main.kotlin.srcDirs += main.java.srcDirs
+    main.kotlin.srcDir "src/main/java"
+//    main.scala.srcDir "src/main/java"
+    main.java.srcDirs = []
 }
-
-sourceSets.main.kotlin.srcDir "src/main/java"
-//sourceSets.main.scala.srcDir "src/main/java"
-sourceSets.main.java.srcDirs = []
 
 classes.dependsOn = classes.taskDependencies.values - "compileScala"
 compileScala.dependsOn = compileScala.taskDependencies.values - "compileJava"
 
-compileJava.dependsOn compileScala
-compileJava.classpath += files(compileKotlin.destinationDir)
+//compileJava.dependsOn compileScala
+//compileJava.classpath += files(compileKotlin.destinationDir)
 
-compileJava.dependsOn compileKotlin
-compileJava.classpath += files(compileKotlin.destinationDir)
+//compileJava.dependsOn compileKotlin.taskDependencies
+//compileJava.classpath += files(compileKotlin.destinationDir)
 
 compileKotlin.dependsOn compileScala
 compileKotlin.classpath += files(compileScala.destinationDir)
-
-compileScala.classpath += files(compileKotlin.destinationDir)
+//classes.dependsOn compileScala
 
 taskTree {
     noRepeat = true

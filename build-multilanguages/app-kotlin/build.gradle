@@ -1,0 +1,4 @@
+dependencies {
+    compile(project(":build-multilanguages:models-kotlin"))
+    compile(project(":build-multilanguages:logic-scala"))
+}

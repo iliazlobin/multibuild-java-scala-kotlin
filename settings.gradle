@@ -9,5 +9,14 @@ rootProject.name='gradle-app-project'
 //    include(it)
 //}
 
-include("build-kotlin-using-scala")
-include("build-scala-using-kotlin")
+//include("build-kotlin-using-scala")
+//include("build-scala-using-kotlin")
+
+fileTree('.') {
+    include 'build-multilanguages/**/build.gradle'
+    exclude '/build.gradle'
+}.collect {
+    relativePath(it.parent).replace(File.separator, ':')
+}.each {
+    include(it)
+}
